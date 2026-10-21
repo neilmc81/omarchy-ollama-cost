@@ -1,0 +1,15 @@
+*.pyc
+__pycache__/
+.DS_Store
+*.log
+
+# never commit credentials — they live outside the plugin dir on purpose
+conf.json
+credentials.json
+*.key
+.env
+
+# local runtime state
+key
+*.jsonl
+overview.json

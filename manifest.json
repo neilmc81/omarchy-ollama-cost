@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "ollama.cost",
+  "name": "Ollama Cloud Cost",
+  "version": "0.1.0",
+  "author": "Neil",
+  "description": "Live Ollama Cloud plan usage in a bar dropdown: included credits used, remaining credit and the billing-period reset date.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Ollama Cloud Cost",
+    "description": "Tracks Ollama Cloud plan usage. Bar shows an OL token; click opens a dropdown with included credits used, remaining credit, reset date, keys and period requests.",
+    "category": "AI",
+    "aliases": [
+      "ollama",
+      "ollama-cost",
+      "api-cost",
+      "usage"
+    ],
+    "allowMultiple": false
+  }
+}
