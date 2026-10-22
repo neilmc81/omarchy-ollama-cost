@@ -6,7 +6,7 @@ with how much of your plan's **included usage** you've used this billing
 period, the **dollars used and remaining**, the **reset date**, which **API
 keys** feed it, and the **request count** for the period.
 
-![Ollama cost widget](assets/screenshot.png)
+![Ollama cost widget](assets/screenshot-panel.png)
 
 ## Features
 
