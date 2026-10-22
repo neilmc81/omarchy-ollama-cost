@@ -15,6 +15,7 @@
     "displayName": "Ollama Cloud Cost",
     "description": "Tracks Ollama Cloud plan usage. Bar shows an OL token; click opens a dropdown with included credits used, remaining credit, reset date, keys and period requests.",
     "category": "AI",
+    "defaultSection": "right",
     "aliases": [
       "ollama",
       "ollama-cost",

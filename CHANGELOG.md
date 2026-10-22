@@ -13,3 +13,6 @@
   (with a backup), checks the key and restarts the shell.
 - Uninstaller (`uninstall.sh`): removes the bar entry, the plugin clone and
   cached data; keeps your API keys unless you say yes or pass `--purge`.
+- Omarchy 4.5 compatible: the bar label renders at normal text size on 4.5
+  (uses `WidgetButton` rather than `BarIconButton`, which 4.5 scales to icon
+  size) and the manifest declares `defaultSection: right`.

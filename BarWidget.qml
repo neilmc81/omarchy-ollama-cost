@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Ui
+import qs.Commons
 
 // Ollama Cloud API cost tracker: one bar icon next to the OpenRouter tracker,
 // with a dropdown showing plan usage, remaining credit and the reset date.
@@ -121,12 +122,12 @@ BarWidget {
     }
   }
 
-  BarIconButton {
+  WidgetButton {
     id: button
     anchors.fill: parent
     bar: root.bar
     text: root.barText
-    slotSize: -1
+    fontSize: Style.bar.iconFont
     tooltipText: "Ollama Cloud plan usage — click for credits used and reset date"
     onPressed: function(b) {
       if (b === Qt.LeftButton) {

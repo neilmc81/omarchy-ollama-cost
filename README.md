@@ -29,6 +29,8 @@ keys** feed it, and the **request count** for the period.
 - An [Ollama API key](https://ollama.com/settings/keys) with cloud access
 - Python 3 (only for the `update.py` data fetcher; standard library only)
 
+Tested on Omarchy 4.0.6; 4.5-ready.
+
 ## Installation
 
 ```bash
