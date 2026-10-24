@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1
+
+- The bar now shows the Ollama mark (glyph U+E907 from the `omarchy` font
+  that ships with Omarchy 4) instead of the `OL` text label. When the
+  included usage for the period is used up, the icon turns the warning
+  (urgent) colour instead of showing `OL!`. `⚠` (no key) and `!` (error)
+  are unchanged.
+
 ## 0.1.0
 
 - First release: bar status label (`OL`, `OL!`, `⚠`, `!`) and a dropdown with

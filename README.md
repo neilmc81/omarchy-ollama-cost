@@ -1,7 +1,7 @@
 # Ollama Cloud Cost — Omarchy bar widget
 
 A live [Ollama Cloud](https://ollama.com) plan-usage tracker for the Omarchy
-status bar. The bar shows a small status label; clicking it opens a dropdown
+status bar. The bar shows the Ollama icon; clicking it opens a dropdown
 with how much of your plan's **included usage** you've used this billing
 period, the **dollars used and remaining**, the **reset date**, which **API
 keys** feed it, and the **request count** for the period.
@@ -10,9 +10,10 @@ keys** feed it, and the **request count** for the period.
 
 ## Features
 
-- Bar status label:
-  - `OL` — working, data is current
-  - `OL!` — the included usage for this period is exhausted
+- Bar icon:
+  - the Ollama mark, in your bar's text colour — working, data is current
+  - the Ollama mark in the warning (urgent) colour — the included usage for
+    this period is exhausted
   - `⚠` — no API key configured
   - `!` — the last fetch failed (details in the dropdown)
 - Dropdown: plan, included usage used (percent and bar), `$ used / $ total`,
@@ -28,6 +29,11 @@ keys** feed it, and the **request count** for the period.
 - Omarchy (Quickshell-based shell with QML plugin support)
 - An [Ollama API key](https://ollama.com/settings/keys) with cloud access
 - Python 3 (only for the `update.py` data fetcher; standard library only)
+- The `omarchy` icon font with the Ollama glyph (U+E907). It ships with
+  Omarchy 4, so there's nothing to install. If your `omarchy` font is older
+  and lacks that glyph, the bar falls back to another font and shows an
+  unrelated icon (or an empty box) instead of the Ollama mark; the widget
+  and dropdown still work.
 
 Tested on Omarchy 4.0.6; 4.5-ready.
 
@@ -183,7 +189,7 @@ watches it and updates live.
 
 ```
 manifest.json      plugin metadata
-BarWidget.qml      bar status label, 5 min auto-refresh
+BarWidget.qml      bar icon, 5 min auto-refresh
 Panel.qml          click dropdown (plan usage, keys, requests, refresh)
 update.py          Ollama data fetcher + multi-key de-dupe
 install.sh         one-line installer

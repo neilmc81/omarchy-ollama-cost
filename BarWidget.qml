@@ -33,15 +33,18 @@ BarWidget {
     if (panelLoader.item) panelLoader.item.toggle()
   }
 
-  // Bar label: a short identifier token, or a glyph for error / missing data.
+  // Bar label: the Ollama mark (omarchy font U+E907), or a glyph for error /
+  // missing data. Limit reached shows the mark in the urgent colour.
   readonly property string barText: root.barButtonText()
+  readonly property bool isMark: root.barText === "\ue907"
+  readonly property bool limitReached: !!(root.overview && root.overview.limit
+    && (root.overview.limit.reached === true || Number(root.overview.limit.percent || 0) >= 100))
 
   function barButtonText() {
     var o = root.overview;
     if (o && o.error === "no-api-key") { return "⚠"; }
     if (o && o.error !== null && o.error !== undefined && o.error !== "") { return "!"; }
-    if (o && o.limit && (o.limit.reached === true || Number(o.limit.percent || 0) >= 100)) { return "OL!"; }
-    return "OL";
+    return "\ue907";
   }
 
   function parse(content) {
@@ -122,12 +125,13 @@ BarWidget {
     }
   }
 
-  WidgetButton {
+  BarIconButton {
     id: button
     anchors.fill: parent
     bar: root.bar
     text: root.barText
-    fontSize: Style.bar.iconFont
+    fontFamily: root.isMark ? "omarchy" : (root.bar ? root.bar.fontFamily : Style.font.family)
+    active: root.isMark && root.limitReached
     tooltipText: "Ollama Cloud plan usage — click for credits used and reset date"
     onPressed: function(b) {
       if (b === Qt.LeftButton) {
