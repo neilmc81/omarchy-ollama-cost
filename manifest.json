@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "ollama.cost",
   "name": "Ollama Cloud Cost",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Neil",
   "description": "Live Ollama Cloud plan usage in a bar dropdown: included credits used, remaining credit and the billing-period reset date.",
   "kinds": [

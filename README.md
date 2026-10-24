@@ -48,10 +48,16 @@ The installer:
 - clones the plugin to `~/.config/omarchy/plugins/ollama.cost` (or runs
   `git pull --ff-only` if it's already a clone; a symlink or any other
   existing folder is left alone)
-- asks for your API key with hidden input (Enter skips) and saves it to
-  `~/.config/ollama-cost/conf.json` with mode 600. It doesn't ask if a key is
-  already configured (see [Configuration](#configuration)). If
-  `OLLAMA_API_KEY` is set, that key is used and isn't written to disk.
+- asks you to paste one Ollama API key (hidden input, Enter skips) and saves
+  it to `~/.config/ollama-cost/conf.json` with mode 600, keeping any other
+  settings in that file. **One key is enough**: Ollama reports usage for the
+  whole account, whichever key you use, so there's no need to add every key
+  your apps use. If `OLLAMA_API_KEY` is set, that key is saved instead of
+  asking. Nothing is asked or changed if a key is already configured (see
+  [Configuration](#configuration)), and there's no prompt without a terminal
+  or with `--no-prompt`. An unusual-looking key gets a warning but is still
+  saved. If you skip, it prints how to add one later and the bar shows `⚠`
+  until you do.
 - backs up `~/.config/omarchy/shell.json` to `shell.json.bak-<timestamp>` and
   adds `{ "id": "ollama.cost" }` to the bar's right side, unless it's
   already there
@@ -61,7 +67,9 @@ Options go after `bash -s --`, e.g. `... | bash -s -- --no-restart`:
 
 | Option / env                    | Effect                                        |
 |---------------------------------|-----------------------------------------------|
+| `--no-prompt`, `OLLAMA_COST_NO_PROMPT=1` | don't ask for a key                  |
 | `--no-register`                 | don't edit `shell.json`; print the snippet    |
+| `--no-verify`                   | don't fetch your usage to check the key       |
 | `--no-restart`, `OLLAMA_COST_NO_RESTART=1` | don't restart the shell            |
 | `OMARCHY_PLUGINS_DIR`           | plugins directory (default `~/.config/omarchy/plugins`) |
 | `OLLAMA_COST_REPO` / `OLLAMA_COST_REF` | clone source and branch/tag (default this repo, `main`) |

@@ -103,7 +103,7 @@ Panel {
 
   function statusText() {
     if (root.err === "no-api-key")
-      return "No Ollama key found — set OLLAMA_API_KEY (or ~/.config/ollama-cost/key)."
+      return "No API key yet. Re-run install.sh, or put it in ~/.config/ollama-cost/key"
     if (root.err === "no-data")
       return "No data yet — run update.py once."
     if (root.err !== "")
