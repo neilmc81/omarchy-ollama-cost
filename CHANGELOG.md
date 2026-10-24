@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.2
+
+- Easier key setup: the installer explains that one Ollama API key is enough
+  (usage is reported for the whole account) and links to where to create it.
+  A key from `OLLAMA_API_KEY` is now saved to `~/.config/ollama-cost/conf.json`
+  (mode 600) when no key is configured, so the bar can see it.
+- New `--no-prompt` (or `OLLAMA_COST_NO_PROMPT=1`) and `--no-verify`
+  installer options. An unusual-looking key gets a warning but is still
+  saved. Skipping prints one line on how to add a key later.
+- The dropdown's no-key message now points to the installer and the key file.
+- Test: `tests/test_install.sh` covers the installer's key step with a temp
+  HOME and a fake key.
+
 ## 0.1.1
 
 - The bar now shows the Ollama mark (glyph U+E907 from the `omarchy` font

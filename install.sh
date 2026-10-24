@@ -32,14 +32,16 @@ have_tty() { (exec </dev/tty) 2>/dev/null; }
 
 usage() {
   cat <<'EOF'
-Usage: install.sh [--no-register] [--no-restart]
+Usage: install.sh [--no-prompt] [--no-register] [--no-restart] [--no-verify]
 
+  --no-prompt     don't ask for an API key (also skipped with no terminal)
   --no-register   don't add the widget to ~/.config/omarchy/shell.json
   --no-restart    don't run `omarchy restart shell`
+  --no-verify     don't fetch your usage once to check the key
 
-Env: OLLAMA_API_KEY / OLLAMA_KEY (used as-is, never written to disk),
-     OLLAMA_COST_REPO, OLLAMA_COST_REF, OMARCHY_PLUGINS_DIR,
-     OLLAMA_COST_NO_RESTART=1
+Env: OLLAMA_API_KEY / OLLAMA_KEY (saved to ~/.config/ollama-cost/conf.json
+     if no key is configured yet), OLLAMA_COST_REPO, OLLAMA_COST_REF,
+     OMARCHY_PLUGINS_DIR, OLLAMA_COST_NO_RESTART=1, OLLAMA_COST_NO_PROMPT=1
 EOF
 }
 
@@ -186,35 +188,39 @@ install_plugin() {
   fi
 }
 
+# Light format check only: a key that fails it is still saved.
+key_looks_ok() { [ ${#1} -ge 20 ] && [[ $1 =~ ^[A-Za-z0-9._-]+$ ]]; }
+
 setup_key() {
   say "API key"
-  if [ -n "${OLLAMA_API_KEY:-}" ] || [ -n "${OLLAMA_KEY:-}" ]; then
-    ok "using the key from the environment (not written to disk)"
-    warn "the shell only sees it if OLLAMA_API_KEY is set in its environment too"
-    return
-  fi
+  local later="add one later: re-run this installer, or put it in $KEY_DIR/key (chmod 600)"
   if key_on_disk; then
-    ok "already configured (conf.json, key file or ~/.hermes/.env)"
+    ok "already configured (conf.json, key file or ~/.hermes/.env); leaving it alone"
     return
   fi
-  if ! have_tty; then
-    warn "no key found and no terminal to ask on. Add one later with:"
-    printf '       mkdir -p %s\n' "$KEY_DIR"
-    printf "       (umask 077; printf '%%s\\\\n' '<your-ollama-key>' > %s/key)\n" "$KEY_DIR"
-    return
-  fi
-
-  local key=""
-  printf '  Paste your Ollama API key (input hidden, Enter to skip): ' >/dev/tty
-  IFS= read -rs key </dev/tty || key=""
-  printf '\n' >/dev/tty
+  local key="${OLLAMA_API_KEY:-${OLLAMA_KEY:-}}" from="environment"
   key=${key//[[:space:]]/}
   if [ -z "$key" ]; then
-    warn "skipped; the widget will show ⚠ until you add a key to $CONF_FILE"
-    return
+    if [ "$NO_PROMPT" = 1 ] || ! have_tty; then
+      warn "no API key yet, the widget will show ⚠; $later"
+      return
+    fi
+    printf '  Create one at https://ollama.com/settings/keys. One key is enough:\n' >/dev/tty
+    printf '  Ollama reports usage for the whole account, whichever key you use.\n' >/dev/tty
+    printf '  Paste your Ollama API key (press Enter to skip): ' >/dev/tty
+    IFS= read -rs key </dev/tty || key=""
+    printf '\n' >/dev/tty
+    key=${key//[[:space:]]/}
+    from="prompt"
+    if [ -z "$key" ]; then
+      warn "skipped, the widget will show ⚠; $later"
+      return
+    fi
   fi
+  key_looks_ok "$key" ||
+    warn "that doesn't look like an Ollama API key (too short or odd characters); saving it anyway"
   save_key "$key"
-  ok "saved to $CONF_FILE (mode 600)"
+  ok "saved the key from the $from to $CONF_FILE (mode 600)"
 }
 
 register_widget() {
@@ -232,6 +238,10 @@ register_widget() {
 
 verify_key() {
   say "Checking the key with Ollama"
+  if [ "$NO_VERIFY" = 1 ]; then
+    ok "skipped (--no-verify)"
+    return
+  fi
   if [ ! -f "$PLUGIN_DIR/update.py" ]; then
     warn "no update.py in $PLUGIN_DIR; skipping"
     return
@@ -261,9 +271,12 @@ restart_shell() {
 }
 
 main() {
-  NO_REGISTER=0 NO_RESTART=0
+  NO_REGISTER=0 NO_RESTART=0 NO_VERIFY=0
+  NO_PROMPT=0; [ "${OLLAMA_COST_NO_PROMPT:-}" = 1 ] && NO_PROMPT=1
   for arg in "$@"; do
     case $arg in
+      --no-prompt)   NO_PROMPT=1 ;;
+      --no-verify)   NO_VERIFY=1 ;;
       --no-register) NO_REGISTER=1 ;;
       --no-restart)  NO_RESTART=1 ;;
       -h|--help)     usage; exit 0 ;;
@@ -285,7 +298,7 @@ main() {
   fi
   verify_key
   restart_shell
-  printf '%sDone.%s Click the OL label in the bar for plan usage and the reset date.\n' "$G" "$N"
+  printf '%sDone.%s Click the Ollama icon in the bar for plan usage and the reset date.\n' "$G" "$N"
 }
 
 # Everything runs from main so a `curl | bash` pipe is fully read before
